@@ -542,7 +542,7 @@ class UniversalLandmarkMazdaScraper:
                 attr_lower = attr.lower()
                 if 'data-' in attr_lower:
                     if 'year' in attr_lower and not vehicle['year']:
-                        if re.match(r'^(19[8-9][0-9]|20[0-2][0-9]), str(value)):
+                        if re.match(r'^(19[8-9][0-9]|20[0-2][0-9])$', str(value)):
                             vehicle['year'] = str(value)
                     elif 'make' in attr_lower and not vehicle['makeName']:
                         vehicle['makeName'] = str(value).title()
