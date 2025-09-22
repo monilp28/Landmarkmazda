@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Red Deer Toyota Used Inventory Scraper - Universal Version
+Landmark Mazda Used Inventory Scraper - Universal Version
 Extracts ONLY accurate data for ANY brand/model: makeName, year, model, sub-model, trim, mileage, value, stock_number, engine
 NO sample data fallback - only real scraped data from any manufacturer
 """
@@ -20,10 +20,10 @@ from urllib.parse import urljoin
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-class UniversalRedDeerToyotaScraper:
+class UniversalLandmarkMazdaScraper:
     def __init__(self):
-        self.base_url = "https://www.reddeertoyota.com"
-        self.target_url = "https://www.reddeertoyota.com/inventory/used/"
+        self.base_url = "https://www.landmarkmazda.com"
+        self.target_url = "https://www.landmarkmazda.com/inventory/used/"
         self.session = requests.Session()
         
         # Enhanced headers
@@ -44,7 +44,7 @@ class UniversalRedDeerToyotaScraper:
         self.vehicles = []
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         
-        # Universal car makes and models
+        # Universal car makes and models (same as Red Deer Toyota scraper)
         self.car_makes = {
             # Toyota models
             'Toyota': {
@@ -96,7 +96,7 @@ class UniversalRedDeerToyotaScraper:
             },
             # Mazda models
             'Mazda': {
-                'Mazda3', 'Mazda6', 'CX-3', 'CX-5', 'CX-9', 'MX-5', 'CX-30', 'RX-7', 'RX-8'
+                'Mazda3', 'Mazda6', 'CX-3', 'CX-5', 'CX-9', 'MX-5', 'CX-30', 'RX-7', 'RX-8', 'CX-50'
             },
             # Subaru models
             'Subaru': {
@@ -314,8 +314,6 @@ class UniversalRedDeerToyotaScraper:
                 'Regular Cab': r'\bRegular\s+Cab\b',
                 # Hyundai trims - Enhanced
                 'Blue': r'\bBlue\b(?!\w)',
-                'SE': r'\bSE\b(?!\w)', # Already defined but important for Hyundai
-                'SEL': r'\bSEL\b(?!\w)', # Already defined but important for Hyundai
                 'Ultimate': r'\bUltimate\b(?!\w)',
                 'Calligraphy': r'\bCalligraphy\b(?!\w)',
                 'N Line': r'\bN\s+Line\b',
@@ -326,12 +324,10 @@ class UniversalRedDeerToyotaScraper:
                 'Trend': r'\bTrend\b(?!\w)',
                 'GL': r'\bGL\b(?!\w)',
                 'GLS': r'\bGLS\b(?!\w)',
-                'Limited': r'\bLimited\b(?!\w)', # Already defined but important
-                'Sport': r'\bSport\b(?!\w)', # Already defined but important
                 'Value Edition': r'\bValue\s+Edition\b',
                 'Tech': r'\bTech\b(?!\w)',
                 'Convenience': r'\bConvenience\b(?!\w)',
-                'Premium': r'\bPremium\b(?!\w)', # Already defined but important
+                'Premium': r'\bPremium\b(?!\w)',
                 'Active': r'\bActive\b(?!\w)',
                 'Preferred AWD': r'\bPreferred\s+AWD\b',
                 'Ultimate AWD': r'\bUltimate\s+AWD\b',
@@ -343,7 +339,6 @@ class UniversalRedDeerToyotaScraper:
                 'Z71': r'\bZ71\b(?!\w)',
                 'High Country': r'\bHigh\s+Country\b',
                 'Premier': r'\bPremier\b(?!\w)',
-                'RS': r'\bRS\b(?!\w)', # Already defined but important for Chevy
                 'Redline': r'\bRedline\b(?!\w)',
                 'Midnight': r'\bMidnight\b(?!\w)',
                 # GMC trims
@@ -356,41 +351,43 @@ class UniversalRedDeerToyotaScraper:
                 'S': r'\bS\b(?!\w)',
                 'SV': r'\bSV\b(?!\w)',
                 'SL': r'\bSL\b(?!\w)',
-                'SR': r'\bSR\b(?!\w)', # Already defined
                 'Nismo': r'\bNismo\b(?!\w)',
                 'Midnight Edition': r'\bMidnight\s+Edition\b',
                 'Pro-4X': r'\bPro-4X\b(?!\w)',
                 # Kia trims  
-                'LX': r'\bLX\b(?!\w)', # Already defined
-                'S': r'\bS\b(?!\w)', # Already defined
-                'EX': r'\bEX\b(?!\w)', # Already defined
                 'SX': r'\bSX\b(?!\w)',
-                'GT': r'\bGT\b(?!\w)', # Already defined
                 'GT-Line': r'\bGT-Line\b(?!\w)',
                 'Turbo': r'\bTurbo\b(?!\w)',
-                # Mazda trims
-                'Sport': r'\bSport\b(?!\w)', # Already defined
-                'Touring': r'\bTouring\b(?!\w)', # Already defined
-                'Grand Touring': r'\bGrand\s+Touring\b',
+                # Mazda trims - Enhanced for Mazda dealership
+                'GX': r'\bGX\b(?!\w)',
+                'GS': r'\bGS\b(?!\w)',
+                'GT': r'\bGT\b(?!\w)', # Already defined but important for Mazda
+                'GS-L': r'\bGS-L\b(?!\w)',
+                'GT Premium': r'\bGT\s+Premium\b',
                 'Signature': r'\bSignature\b(?!\w)',
                 'Carbon Edition': r'\bCarbon\s+Edition\b',
+                'Club': r'\bClub\b(?!\w)',
+                'Grand Touring': r'\bGrand\s+Touring\b',
+                'Sport': r'\bSport\b(?!\w)', # Already defined but important for Mazda
+                'Touring': r'\bTouring\b(?!\w)', # Already defined but important for Mazda
+                'i Sport': r'\bi\s+Sport\b',
+                'i Touring': r'\bi\s+Touring\b',
+                'i Grand Touring': r'\bi\s+Grand\s+Touring\b',
+                'SV': r'\bSV\b(?!\w)', # Already defined but also used by Mazda
+                'SKYACTIV': r'\bSKYACTIV\b(?!\w)',
+                'SKYACTIV-G': r'\bSKYACTIV-G\b(?!\w)',
+                'SKYACTIV-D': r'\bSKYACTIV-D\b(?!\w)',
                 # Subaru trims
-                'Base': r'\bBase\b(?!\w)', # Already defined
-                'Premium': r'\bPremium\b(?!\w)', # Already defined
-                'Limited': r'\bLimited\b(?!\w)', # Already defined
-                'Touring': r'\bTouring\b(?!\w)', # Already defined
+                'Base': r'\bBase\b(?!\w)',
                 'Onyx Edition': r'\bOnyx\s+Edition\b',
                 'Wilderness': r'\bWilderness\b(?!\w)',
                 'STI': r'\bSTI\b(?!\w)',
                 # Luxury trims
-                'Base': r'\bBase\b(?!\w)', # Already defined
-                'Premium': r'\bPremium\b(?!\w)', # Already defined
-                'Luxury': r'\bLuxury\b(?!\w)', # Already defined
-                'Executive': r'\bExecutive\b(?!\w)', # Already defined
-                'M Sport': r'\bM\s+Sport\b', # Already defined
-                'AMG': r'\bAMG\b(?!\w)', # Already defined
-                'S-Line': r'\bS-Line\b(?!\w)', # Already defined
-                'F Sport': r'\bF\s+Sport\b' # Already defined
+                'Executive': r'\bExecutive\b(?!\w)',
+                'M Sport': r'\bM\s+Sport\b',
+                'AMG': r'\bAMG\b(?!\w)',
+                'S-Line': r'\bS-Line\b(?!\w)',
+                'F Sport': r'\bF\s+Sport\b'
             }
             
             for trim_name, pattern in trim_patterns.items():
@@ -408,6 +405,7 @@ class UniversalRedDeerToyotaScraper:
                 r"Was[:\s]*\$([0-9,]+)\s*(?:Now|Sale Price)[:\s]*\$([0-9,]+)",
                 r"List Price[:\s]*\$([0-9,]+)\s*(?:Now|Sale Price)[:\s]*\$([0-9,]+)",
                 r"Retail Price[:\s]*\$([0-9,]+)\s*(?:Now|Sale Price)[:\s]*\$([0-9,]+)",
+                r"MSRP[:\s]*\$([0-9,]+)\s*(?:Now|Sale|Our Price)[:\s]*\$([0-9,]+)",
             ]
             for pattern in paired_patterns:
                 m = re.search(pattern, element_text, re.IGNORECASE)
@@ -421,7 +419,7 @@ class UniversalRedDeerToyotaScraper:
             if orig_price is None and sale_price is None:
                 # Independent patterns
                 sale_patterns = [
-                    r"(?:Sale\s*Price|Now|Internet\s*Price|Special|Clearance)[:\s]*\$([0-9,]+)",
+                    r"(?:Sale\s*Price|Now|Internet\s*Price|Special|Clearance|Our\s*Price)[:\s]*\$([0-9,]+)",
                 ]
                 orig_patterns = [
                     r"(?:Price|MSRP|List\s*Price|Retail\s*Price|Was)[:\s]*\$([0-9,]+)",
@@ -496,7 +494,7 @@ class UniversalRedDeerToyotaScraper:
                         vehicle['stock_number'] = stock_value
                         break
             
-            # Extract engine - much more comprehensive patterns for all brands
+            # Extract engine - comprehensive patterns for all brands
             engine_patterns = [
                 r'(\d\.\d+L\s*(?:V?\d+|I\d+|[0-9]-?Cyl|Cylinder))',  # 2.5L V6, 1.8L 4Cyl
                 r'(\d\.\d+\s*L\s*(?:V?\d+|I\d+|[0-9]-?Cyl))',        # 3.5 L V6
@@ -509,7 +507,9 @@ class UniversalRedDeerToyotaScraper:
                 r'(V\d+\s*\d\.\d+L)',                                 # V8 5.0L
                 r'(\d+\.\d+\s*Liter)',                                # 3.6 Liter
                 r'Electric\s*Motor',                                   # Electric vehicles
-                r'(\d+kWh\s*Battery)'                                 # Battery capacity
+                r'(\d+kWh\s*Battery)',                                # Battery capacity
+                r'(SKYACTIV-[GD]\s*\d\.\d+L)',                        # Mazda SKYACTIV engines
+                r'(\d\.\d+L\s*SKYACTIV)',                             # Alternative SKYACTIV pattern
             ]
             
             for pattern in engine_patterns:
@@ -521,6 +521,11 @@ class UniversalRedDeerToyotaScraper:
                     
                     # For electric vehicles
                     if 'Electric' in engine_text or 'kWh' in engine_text:
+                        vehicle['engine'] = engine_text
+                        break
+                    
+                    # For SKYACTIV engines (Mazda)
+                    if 'SKYACTIV' in engine_text.upper():
                         vehicle['engine'] = engine_text
                         break
                     
@@ -537,7 +542,7 @@ class UniversalRedDeerToyotaScraper:
                 attr_lower = attr.lower()
                 if 'data-' in attr_lower:
                     if 'year' in attr_lower and not vehicle['year']:
-                        if re.match(r'^(19[8-9][0-9]|20[0-2][0-9])$', str(value)):
+                        if re.match(r'^(19[8-9][0-9]|20[0-2][0-9]), str(value)):
                             vehicle['year'] = str(value)
                     elif 'make' in attr_lower and not vehicle['makeName']:
                         vehicle['makeName'] = str(value).title()
@@ -583,7 +588,36 @@ class UniversalRedDeerToyotaScraper:
         """Find vehicle container elements with accurate data"""
         vehicles = []
         
-        # Try more specific selectors first
+        # Landmark Mazda specific selectors (prioritize these first)
+        landmark_selectors = [
+            '[data-vehicle]',
+            '.vehicle-tile',
+            '.vehicle-info',
+            '.inventory-vehicle',
+            '.vehicle-summary',
+            '.srp-vehicle',
+            '.vehicle-card-wrapper'
+        ]
+        
+        # Try Landmark Mazda specific selectors first
+        for selector in landmark_selectors:
+            elements = soup.select(selector)
+            if elements:
+                logger.info("Found {} elements with Landmark selector: {}".format(len(elements), selector))
+                
+                for element in elements:
+                    vehicle = self.extract_clean_vehicle_data(element)
+                    
+                    if self.is_complete_vehicle(vehicle):
+                        vehicles.append(vehicle)
+                        logger.info("Extracted complete vehicle: {} {} {} - Stock: {}".format(
+                            vehicle['year'], vehicle['makeName'], vehicle['model'], vehicle['stock_number']))
+                
+                if vehicles:
+                    logger.info("Successfully extracted {} vehicles using {}".format(len(vehicles), selector))
+                    return vehicles
+        
+        # Try more general selectors
         priority_selectors = [
             '[data-vehicle-id]',
             '[data-stock-number]',
@@ -618,7 +652,8 @@ class UniversalRedDeerToyotaScraper:
             '.listing-item',
             '.inventory-card',
             '[class*="vehicle"]',
-            '[class*="inventory"]'
+            '[class*="inventory"]',
+            '[class*="car"]'
         ]
         
         for selector in fallback_selectors:
@@ -641,7 +676,7 @@ class UniversalRedDeerToyotaScraper:
     def scrape_inventory(self):
         """Main scraping method - only returns accurate data for any brand"""
         logger.info("=" * 80)
-        logger.info("UNIVERSAL RED DEER TOYOTA USED INVENTORY SCRAPER")
+        logger.info("UNIVERSAL LANDMARK MAZDA USED INVENTORY SCRAPER")
         logger.info("Extracting accurate data for ANY brand/model - no fallback samples")
         logger.info("=" * 80)
         
@@ -677,6 +712,7 @@ class UniversalRedDeerToyotaScraper:
                     'trim': '',
                     'mileage': '',
                     'value': "${:,}".format(int(match[3].replace(',', ''))),
+                    'sale_value': '',
                     'stock_number': '',
                     'engine': ''
                 }
@@ -737,7 +773,7 @@ class UniversalRedDeerToyotaScraper:
     def print_results(self):
         """Print results with accuracy validation"""
         print("\n" + "=" * 100)
-        print("RED DEER TOYOTA USED INVENTORY - UNIVERSAL SCRAPER (ALL BRANDS)")
+        print("LANDMARK MAZDA USED INVENTORY - UNIVERSAL SCRAPER (ALL BRANDS)")
         print("=" * 100)
         
         if not self.vehicles:
@@ -786,7 +822,7 @@ class UniversalRedDeerToyotaScraper:
 
 def main():
     """Main execution - no fallback data"""
-    scraper = UniversalRedDeerToyotaScraper()
+    scraper = UniversalLandmarkMazdaScraper()
     
     try:
         # Run the precise scraper
@@ -800,7 +836,7 @@ def main():
         project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
         public_data_dir = os.path.join(project_root, 'public', 'data')
         os.makedirs(public_data_dir, exist_ok=True)
-        csv_path = os.path.join(public_data_dir, 'inventory.csv')
+        csv_path = os.path.join(public_data_dir, 'landmark_inventory.csv')
         
         # Only save CSV if we have real data
         if vehicles:
@@ -828,7 +864,7 @@ def main():
         try:
             script_dir = os.path.dirname(os.path.abspath(__file__))
             project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
-            csv_path = os.path.join(project_root, 'public', 'data', 'inventory.csv')
+            csv_path = os.path.join(project_root, 'public', 'data', 'landmark_inventory.csv')
             if os.path.exists(csv_path):
                 os.remove(csv_path)
                 print("Removed existing CSV file due to scraper error")
